@@ -18,3 +18,8 @@ class AllitebooksSpider(scrapy.Spider):
             yield {
                 'name': book.css("h2.entry-title").css("a::text").get()
             }
+
+        for l in response.css("link"):
+            if l.attrib['rel'] == 'next':
+                next_page = l.attrib['href']
+                yield scrapy.Request(next_page, callback=self.parse)
