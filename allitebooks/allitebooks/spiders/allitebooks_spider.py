@@ -14,8 +14,7 @@ class AllitebooksSpider(scrapy.Spider):
             yield scrapy.Request(url=url, callback=self.parse)
 
     def parse(self, response):
-        page = response.url.split("/")[-2]
-        filename = 'allitebooks-%s.html' % page
-        with open(filename, 'wb') as f:
-            f.write(response.body)
-        self.log('Saved file %s' % filename)
+        for book in response.css("div.entry-body"):
+            yield {
+                'name': book.css("h2.entry-title").css("a::text").get()
+            }
